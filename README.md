@@ -84,13 +84,13 @@ php artisan serve
 7.Access the application:
 Open your web browser and navigate to http://localhost:8000.
 
-##Contributing
+## Contributing
 Thank you for considering contributing to this project! Please review the contribution guidelines before making a pull request.
-##Author
+## Author
 Nabil Ghemam Djeridi
-##License
+## License
 This project is licensed under the MIT License. See the LICENSE file for details.
-##Acknowledgments
+## Acknowledgments
 Laravel Framework
 Laravel community and contributors
 Inspiration from various e-commerce platforms
