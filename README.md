@@ -56,3 +56,31 @@ Follow these instructions to set up and run the project on your local machine.
  ```bash
  composer install
 ```
+3.Set up your environment variables:
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=ecommerce_db
+DB_USERNAME=root
+DB_PASSWORD=
+
+```
+4.Generate application key:
+
+```bash
+php artisan key:generate
+```
+5.Run database migrations and seeders:
+
+```bash
+php artisan migrate --seed
+```
+6.Start the development server:
+
+```bash
+php artisan serve
+```
+7.Access the application:
+Open your web browser and navigate to http://localhost:8000.
+
