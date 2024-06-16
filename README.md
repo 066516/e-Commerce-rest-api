@@ -52,5 +52,7 @@ Follow these instructions to set up and run the project on your local machine.
    cd your-repository
    ```
 2.Install PHP dependencies:
-   run ```composer install
+   run
+ ```bash
+ composer install
 ```
