@@ -45,6 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('orders-with-products', [OrderController::class, 'withProducts']);
     Route::get('confirm-order/{id}', [OrderController::class, 'confirmOrder']);
     Route::get('my-shipping', [ShippingController::class,'getMyShippings']);
+    Route::get('shipping/{id}', [ShippingController::class, 'show']);
 
 
     Route::middleware(['ensureAdminRole'])->group(function () { // Add the middleware here
