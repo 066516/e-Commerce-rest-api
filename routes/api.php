@@ -44,8 +44,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('orders-with-products', [OrderController::class, 'withProducts']);
     Route::get('confirm-order/{id}', [OrderController::class, 'confirmOrder']);
 
-    
-    Route::middleware([EnsureAdminRole::class])->group(function () { // Add the middleware here
+
+    Route::middleware(['ensureAdminRole'])->group(function () { // Add the middleware here
         Route::apiResource('products', ProductController::class)->except(['index', 'show']); 
         Route::apiResource('categories', CategoryController::class)->except(['index', 'show']); 
         // ... other admin-only routes ...
