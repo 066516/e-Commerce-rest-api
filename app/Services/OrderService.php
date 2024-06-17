@@ -2,7 +2,9 @@
 namespace App\Services;
 
 use App\Models\Product;
+use App\Models\Order;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection;
 
 class OrderService
 {
@@ -28,5 +30,9 @@ class OrderService
         }
 
         return $totalAmount;
+    }
+    public function getOrdersByUserId(int $userId): Collection
+    {
+        return Order::with('products')->where('user_id', $userId)->get();
     }
 }

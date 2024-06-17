@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use App\Services\OrderService;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -93,7 +94,21 @@ class OrderController extends Controller
             return response()->json(['message' => 'An error occurred while fetching the order.'], 500);
         }
     }
+    public function getOrdersByUserId(Request $request){ 
+   
+        try {
+            $user = Auth::user();
 
+            if (!$user) {
+                throw new \Exception('User not authenticated');
+            }
+            $orders = $this->orderService->getOrdersByUserId($user->id);
+
+            return response()->json($orders, 200);
+    } catch (\Exception $e) {
+        return response()->json(['message' => $e->getMessage()], 401);
+    }
+    }
     public function update(Request $request, $id)
     {
         try {

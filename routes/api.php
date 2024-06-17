@@ -32,8 +32,9 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/register', [UserController::class, 'register']);
 // Route::get('/user', [UserController::class, 'me']);
 Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'user']);
-
 Route::apiResource('users', UserController::class);
+
 Route::apiResource('orders', OrderController::class);
+Route::middleware('auth:sanctum')->get('orders-by-user', [OrderController::class,'getOrdersByUserId']);
 Route::get('orders-with-products', [OrderController::class,'withProducts' ]);
 
