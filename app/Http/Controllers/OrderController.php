@@ -65,13 +65,8 @@ class OrderController extends Controller
                 'total_amount' => $totalAmount,
             ]);
 
-            // Attach products to the order with quantities and prices
-            foreach ($request->products as $product) {
-                $order->products()->attach($product['id'], [
-                    'quantity' => $product['quantity'],
-                    'price' => Product::find($product['id'])->price,
-                ]);
-            }
+            $this->orderService->attachProductsToOrder($order, $request->products);
+            $this->orderService->decrementProductQuantities($request->products);
 
             return response()->json($order, 201);
         } catch (ModelNotFoundException $e) {
