@@ -18,6 +18,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ShippingController;
 
 use App\Http\Middleware\EnsureAdminRole; // Assuming you've created this middleware
 
@@ -43,11 +44,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('orders-by-user', [OrderController::class, 'getOrdersByUserId']);
     Route::get('orders-with-products', [OrderController::class, 'withProducts']);
     Route::get('confirm-order/{id}', [OrderController::class, 'confirmOrder']);
+    Route::get('my-shipping', [ShippingController::class,'getMyShippings']);
 
 
     Route::middleware(['ensureAdminRole'])->group(function () { // Add the middleware here
         Route::apiResource('products', ProductController::class)->except(['index', 'show']); 
         Route::apiResource('categories', CategoryController::class)->except(['index', 'show']); 
+        Route::apiResource('shipping', ShippingController::class);
         // ... other admin-only routes ...
     });
 });

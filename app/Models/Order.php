@@ -24,4 +24,11 @@ class Order extends Model
         return $this->belongsToMany(Product::class, 'order_product')
                     ->withPivot('quantity', 'price');
     }
+    public function shipping()
+{
+    return $this->hasOne(Shipping::class); // An order has one shipment
+}
+// In your User model (app/Models/User.php)
+
+
 }
