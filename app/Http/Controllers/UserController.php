@@ -81,20 +81,7 @@ class UserController extends Controller
             return response()->json(['message' => 'An error occurred while logging in.'], 500);
         }
     }
-    public function me(Request $request)
-    {
-        try {
-            $user = Auth::user();
-    
-            if (!$user) {
-                return response()->json(['message' => 'Unauthenticated.'], 401);
-            }
-    
-            return response()->json($user, 200);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'An error occurred while fetching user details.'], 500);
-        }
-    }
+   
     public function user(Request $request)
     {
         try {
