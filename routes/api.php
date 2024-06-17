@@ -26,6 +26,8 @@ Route::put('products/{product}', [ProductController::class, 'update']);
 Route::patch('products/{product}', [ProductController::class, 'update']);
 Route::delete('products/{product}', [ProductController::class, 'destroy']);
 Route::apiResource('categories', CategoryController::class);
+Route::get('categories-with-products', [CategoryController::class, 'categoriesWithProducts']);
+Route::get('categories-with-products/{id}', [CategoryController::class, 'categoryWithProducts']);
 Route::apiResource('orders', OrderController::class);
 Route::apiResource('users', UserController::class);
 
