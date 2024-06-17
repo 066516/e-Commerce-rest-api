@@ -13,6 +13,7 @@ class Product extends Model
         'category_id',
         'description',
         'price',
+        'quantity',
         // Add other fillable fields as needed
     ];
 

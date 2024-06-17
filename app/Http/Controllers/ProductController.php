@@ -22,6 +22,7 @@ class ProductController extends Controller
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
                 'price' => 'required|numeric',
+                'quantity' => 'required|numeric',
                 'category_id' => 'required|exists:categories,id',
             ]);
 
@@ -62,6 +63,7 @@ class ProductController extends Controller
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
                 'price' => 'required|numeric',
+                'quantity' => 'required|numeric',
                 'category_id' => 'required|exists:categories,id',
             ]);
     
