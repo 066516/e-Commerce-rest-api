@@ -1,9 +1,11 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
 {
@@ -15,40 +17,91 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric',
-            'category_id' => 'required|exists:categories,id',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'price' => 'required|numeric',
+                'category_id' => 'required|exists:categories,id',
+            ]);
 
-        $product = Product::create($request->all());
+            $product = Product::create($request->all());
 
-        return response()->json($product, 201);
+            return response()->json($product, 201);
+
+        } catch (ValidationException $e) {
+            $errorMessages = collect($e->errors())->flatten();
+
+            return response()->json([
+                'errors' => $errorMessages,
+                'message' => 'Validation failed. Please check the input values.'
+            ], 422);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while creating the product. ' . $e->getMessage()
+            ], 500);
+        }
     }
 
-    public function show(Product $product)
+    public function show($id)
     {
-        return response()->json($product);
+        try {
+            $product = Product::findOrFail($id);
+            return response()->json($product);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+    }
+    
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'price' => 'required|numeric',
+                'category_id' => 'required|exists:categories,id',
+            ]);
+    
+            $product = Product::findOrFail($id);
+            $product->update($request->all());
+    
+            return response()->json($product);
+    
+        } catch (ValidationException $e) {
+            return response()->json([
+                'errors' => $e->errors(),
+                'message' => 'Validation failed. Please check the input values.'
+            ], 422);
+    
+        } catch (ModelNotFoundException $e) {
+            return response()->json([
+                'message' => 'Product not found'
+            ], 404);
+    
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while creating the product. ' . $e->getMessage()
+            ], 500);
+        }
     }
 
-    public function update(Request $request, Product $product)
+     public function destroy($id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric',
-            'category_id' => 'required|exists:categories,id',
-        ]);
+        try {
+            $product = Product::findOrFail($id);
+            $product->delete();
 
-        $product->update($request->all());
+            return response()->json(['message' => 'Product deleted successfully'], 200);
 
-        return response()->json($product, 200);
-    }
-
-    public function destroy(Product $product)
-    {
-        $product->delete();
-        return response()->json(null, 204);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Product not found'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while deleting the product'], 500);
+        }
     }
 }
+
+    

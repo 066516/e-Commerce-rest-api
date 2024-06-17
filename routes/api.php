@@ -19,7 +19,12 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 
-Route::apiResource('products', ProductController::class);
+Route::get('products', [ProductController::class, 'index']);
+Route::post('products', [ProductController::class, 'store']);
+Route::get('products/{product}', [ProductController::class, 'show']);
+Route::put('products/{product}', [ProductController::class, 'update']);
+Route::patch('products/{product}', [ProductController::class, 'update']);
+Route::delete('products/{product}', [ProductController::class, 'destroy']);
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('orders', OrderController::class);
 Route::apiResource('users', UserController::class);
