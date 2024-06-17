@@ -12,7 +12,16 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+// routes/web.php
 
-Route::get('/', function () {
-    return view('welcome');
+use App\Http\Controllers\Auth\GoogleController;
+// routes/web.php
+
+Route::middleware(['web'])->group(function () {
+    Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+    Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+    Route::get('/home', function(){
+        return "you are logged in";
+    })->name('home')->middleware('auth');
 });
+

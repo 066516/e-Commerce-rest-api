@@ -23,6 +23,17 @@ use App\Http\Controllers\ShippingController;
 use App\Http\Middleware\EnsureAdminRole; // Assuming you've created this middleware
 
 // Public Routes (No Authentication Needed)
+use App\Http\Controllers\Auth\GoogleController;
+
+// Route::middleware(['web'])->group(function () {
+//     Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
+//     Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+// });
+
+Route::get('home',function(){
+    return response()->json(['message' => 'Hello World!']);
+});
+
 Route::group([], function () {
     Route::get('products', [ProductController::class, 'index']);
     Route::get('products/{product}', [ProductController::class, 'show']); // Allow viewing products without login
