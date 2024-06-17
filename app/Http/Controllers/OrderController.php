@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use App\Services\OrderService;
-use Illuminate\Support\Facades\Auth;
 use App\Services\AuthService;
 
 class OrderController extends Controller
@@ -51,7 +50,7 @@ class OrderController extends Controller
     {
         try {
             $validator = Validator::make($request->all(), [
-                'user_id' => 'required|exists:users,id',
+                // 'user_id' => 'required|exists:users,id',
                 'products' => 'required|array',
                 'products.*.id' => 'required|exists:products,id',
                 'products.*.quantity' => 'required|integer|min:1',
@@ -63,10 +62,11 @@ class OrderController extends Controller
 
             // Calculate the total amount
             $totalAmount = $this->orderService->calculateTotalAmount($request->products);
+            $user = $this->authService->getAuthenticatedUser();
 
             // Create the order
             $order = Order::create([
-                'user_id' => $request->user_id,
+                'user_id' => $user->id,
                 'total_amount' => $totalAmount,
             ]);
 
