@@ -28,6 +28,12 @@ Route::delete('products/{product}', [ProductController::class, 'destroy']);
 Route::apiResource('categories', CategoryController::class);
 Route::get('categories-with-products', [CategoryController::class, 'categoriesWithProducts']);
 Route::get('categories-with-products/{id}', [CategoryController::class, 'categoryWithProducts']);
-Route::apiResource('orders', OrderController::class);
+Route::post('/login', [UserController::class, 'login']);
+Route::post('/register', [UserController::class, 'register']);
+// Route::get('/user', [UserController::class, 'me']);
+Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'user']);
+
 Route::apiResource('users', UserController::class);
+Route::apiResource('orders', OrderController::class);
+Route::get('orders-with-products', [OrderController::class,'withProducts' ]);
 

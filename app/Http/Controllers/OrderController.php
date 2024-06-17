@@ -3,100 +3,141 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\OrderProduct;
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
+use App\Services\OrderService;
 
-class OrderProductController extends Controller
+class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct(OrderService $orderService)
+    {
+        $this->orderService = $orderService;
+    }
     public function index()
     {
-        $orderProducts = OrderProduct::all();
-        return response()->json($orderProducts, 200);
+        try 
+        {
+            $orders = Order::all();
+            return response()->json($orders, 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while fetching orders.'], 500);
+        }
     }
+    public function withProducts()
+    {
+        try {
+            // Eager load products with orders
+            $orders = Order::with('products')->get();
+            return response()->json($orders, 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while fetching orders.'], 500);
+        }
+    }
+    protected $orderService;
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+  
+
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'order_id' => 'required|exists:orders,id',
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
-            'price' => 'required|numeric|min:0',
-        ]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'required|exists:users,id',
+                'products' => 'required|array',
+                'products.*.id' => 'required|exists:products,id',
+                'products.*.quantity' => 'required|integer|min:1',
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 400);
+            }
+
+            // Calculate the total amount
+            $totalAmount = $this->orderService->calculateTotalAmount($request->products);
+
+            // Create the order
+            $order = Order::create([
+                'user_id' => $request->user_id,
+                'total_amount' => $totalAmount,
+            ]);
+
+            // Attach products to the order with quantities and prices
+            foreach ($request->products as $product) {
+                $order->products()->attach($product['id'], [
+                    'quantity' => $product['quantity'],
+                    'price' => Product::find($product['id'])->price,
+                ]);
+            }
+
+            return response()->json($order, 201);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'User or product not found.'], 404);
+        } catch (QueryException $e) {
+            return response()->json(['message' => 'Failed to create order.'], 500);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
         }
-
-        $orderProduct = OrderProduct::create([
-            'order_id' => $request->order_id,
-            'product_id' => $request->product_id,
-            'quantity' => $request->quantity,
-            'price' => $request->price,
-        ]);
-
-        return response()->json($orderProduct, 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\OrderProduct  $orderProduct
-     * @return \Illuminate\Http\Response
-     */
-    public function show(OrderProduct $orderProduct)
+    public function show($id)
     {
-        return response()->json($orderProduct, 200);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\OrderProduct  $orderProduct
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, OrderProduct $orderProduct)
-    {
-        $validator = Validator::make($request->all(), [
-            'order_id' => 'required|exists:orders,id',
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
-            'price' => 'required|numeric|min:0',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+        try {
+            $order = Order::with('user', 'products')->findOrFail($id);
+            return response()->json($order, 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Order not found.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while fetching the order.'], 500);
         }
-
-        $orderProduct->order_id = $request->order_id;
-        $orderProduct->product_id = $request->product_id;
-        $orderProduct->quantity = $request->quantity;
-        $orderProduct->price = $request->price;
-        $orderProduct->save();
-
-        return response()->json($orderProduct, 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\OrderProduct  $orderProduct
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(OrderProduct $orderProduct)
+    public function update(Request $request, $id)
     {
-        $orderProduct->delete();
-        return response()->json(null, 204);
+        try {
+            $order = Order::findOrFail($id);
+
+            $validator = Validator::make($request->all(), [
+                'user_id' => 'sometimes|required|exists:users,id',
+                'total_amount' => 'sometimes|required|numeric|min:0',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 400);
+            }
+
+            // Update order fields
+            if ($request->has('user_id')) {
+                $order->user_id = $request->user_id;
+            }
+            if ($request->has('total_amount')) {
+                $order->total_amount = $request->total_amount;
+            }
+            $order->save();
+
+            return response()->json($order, 200);
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Order not found.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while updating the order.'], 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $order = Order::findOrFail($id);
+            $order->delete();
+
+            return response()->json(null, 204);
+
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Order not found.'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while deleting the order.'], 500);
+        }
     }
 }
