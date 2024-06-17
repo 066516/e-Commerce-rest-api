@@ -151,4 +151,17 @@ class OrderController extends Controller
             return response()->json(['message' => 'An error occurred while deleting the order.'], 500);
         }
     }
+    public function confiremOrderController($id){
+        try {
+            $order = Order::findOrFail($id);
+            $this->orderService->confiremOrder($order);
+            return response()->json(['message' => 'Order confirmed successfully'], 200);
+        }catch(ModelNotFoundException $e){ 
+            return response()->json(['message' => 'Order not found.'], 404);
+        
+        }
+        catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while confirming the order.'], 500);
+        }
+    }
 }

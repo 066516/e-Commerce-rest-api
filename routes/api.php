@@ -37,4 +37,5 @@ Route::apiResource('users', UserController::class);
 Route::middleware('auth:sanctum')->apiResource('orders', OrderController::class);
 Route::middleware('auth:sanctum')->get('orders-by-user', [OrderController::class,'getOrdersByUserId']);
 Route::get('orders-with-products', [OrderController::class,'withProducts' ]);
-
+route::get('confirem-order/{id}', [OrderController::class,'confiremOrderController' ]);
+ 

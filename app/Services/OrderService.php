@@ -60,4 +60,10 @@ class OrderService
             ]);
         }
     }
+    public function confiremOrder($order)
+    {
+        $order->confirmed = true;
+        $order->save();
+        
+    }
 }
