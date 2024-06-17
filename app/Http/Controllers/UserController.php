@@ -10,8 +10,16 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\AuthenticationException; // Import the correct AuthenticationException
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use App\Services\AuthService;
+
 class UserController extends Controller
 {
+    protected $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
     public function index()
     {
         try {
@@ -85,11 +93,8 @@ class UserController extends Controller
     public function user(Request $request)
     {
         try {
-            $user = Auth::user();
+            $user = $this->authService->getAuthenticatedUser();
 
-            if (!$user) {
-                throw new \Exception('User not authenticated');
-            }
 
             return response()->json($user, 200);
         } catch (\Exception $e) {

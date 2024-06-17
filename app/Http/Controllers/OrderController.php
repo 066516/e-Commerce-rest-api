@@ -11,12 +11,18 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use App\Services\OrderService;
 use Illuminate\Support\Facades\Auth;
+use App\Services\AuthService;
 
 class OrderController extends Controller
 {
-    public function __construct(OrderService $orderService)
+    protected $authService;
+    protected $orderService;
+
+    public function __construct(OrderService $orderService, AuthService $authService)
     {
         $this->orderService = $orderService;
+        $this->authService = $authService;
+
     }
     public function index()
     {
@@ -38,7 +44,6 @@ class OrderController extends Controller
             return response()->json(['message' => 'An error occurred while fetching orders.'], 500);
         }
     }
-    protected $orderService;
 
   
 
@@ -92,11 +97,7 @@ class OrderController extends Controller
     public function getOrdersByUserId(Request $request){ 
    
         try {
-            $user = Auth::user();
-
-            if (!$user) {
-                throw new \Exception('User not authenticated');
-            }
+            $user = $this->authService->getAuthenticatedUser();
             $orders = $this->orderService->getOrdersByUserId($user->id);
 
             return response()->json($orders, 200);
