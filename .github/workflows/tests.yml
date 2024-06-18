@@ -3,58 +3,40 @@ name: Run Tests
 on:
   push:
     branches:
-      - main # Adjust branch name as per your repository's main branch
+      - main # Adjust branch name as needed
   pull_request:
     branches:
-      - main # Adjust branch name as per your repository's main branch
+      - main # Adjust branch name as needed
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     env:
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      DB_DATABASE: ${{ secrets.DB_DATABASE }}
-      DB_USERNAME: ${{ secrets.DB_USERNAME }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_SSLMODE: prefer # Ensure this matches your PostgreSQL SSL mode setting
+      DB_CONNECTION: pgsql
+      DB_HOST: dpg-cpooo72j1k6c73abu5l0-a.oregon-postgres.render.com
+      DB_PORT: 5432
+      DB_DATABASE: e_commerce_otes
+      DB_USERNAME: e_commerce_otes_user
+      DB_PASSWORD: HXwKUXNAFxIQo27hhQynlhyVKK1ZZF8b # Use GitHub Secrets for sensitive information
+      DB_SSLMODE: prefer
 
     steps:
-      - name: Debug database configuration
-        run: |
-          echo "DB_HOST=${DB_HOST}"
-          echo "DB_PORT=${DB_PORT}"
-          echo "DB_DATABASE=${DB_DATABASE}"
-          echo "DB_USERNAME=${DB_USERNAME}"
-          echo "DB_PASSWORD=${DB_PASSWORD}"
-
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.2" # Adjust PHP version based on your Laravel application requirements
+          php-version: "8.2"  # Adjust PHP version based on your Laravel application requirements
 
       - name: Install dependencies
         run: composer install --no-ansi --no-interaction --no-progress --no-suggest
 
-      - name: Copy .env file
-        run: cp .env.example .env
+ 
 
       - name: Generate application key
         run: php artisan key:generate
-
-      - name: Configure environment variables
-        run: |
-          echo "DB_CONNECTION=pgsql" >> .env
-          echo "DB_HOST=${DB_HOST}" >> .env
-          echo "DB_PORT=${DB_PORT}" >> .env
-          echo "DB_DATABASE=${DB_DATABASE}" >> .env
-          echo "DB_USERNAME=${DB_USERNAME}" >> .env
-          echo "DB_PASSWORD=${DB_PASSWORD}" >> .env
-          echo "DB_SSLMODE=${DB_SSLMODE}" >> .env
 
       - name: Run database migrations
         run: php artisan migrate --force
