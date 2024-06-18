@@ -36,6 +36,9 @@ jobs:
       - name: Run database migrations
         run: php artisan migrate --force
 
+      - name: Run composer update
+        run: composer update
+
       - name: Run tests
         run: vendor/bin/phpunit --testdox
 
