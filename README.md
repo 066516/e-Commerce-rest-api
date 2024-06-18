@@ -27,12 +27,13 @@ This project is a full-featured e-commerce web application built using the Larav
 
 ## Features
 
+
 - **Product Management**: Easily add, edit, and manage products with detailed information such as pricing, descriptions, and categories.
 - **Order Processing**: Seamless handling of customer orders with features for order status updates, invoices, and customer notifications.
-- **User Authentication**: Secure user registration and authentication system.
+- **User Authentication**: Secure user registration and authentication system, including authentication via GitHub and Google.
+- **Role-Based Authorization**: Assign roles to users (e.g., admin, customer) with appropriate access permissions.
+- **Email Notifications**: Send automatic email notifications for order confirmations, status updates, and account activities.
 - **Shopping Cart**: Persistent shopping cart functionality for users to add and manage items before checkout.
-- **Payment Integration**: Integration with popular payment gateways for seamless transactions.
-- **Admin Dashboard**: Comprehensive dashboard for administrators to monitor sales, manage inventory, and view analytics.
 
 ## Getting Started
 
