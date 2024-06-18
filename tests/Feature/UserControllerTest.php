@@ -9,6 +9,7 @@ use App\Models\User;
 use Laravel\Sanctum\Sanctum;
 use Illuminate\Support\Facades\Hash;
 
+
 class UserControllerTest extends TestCase
 {
     use  WithFaker;
