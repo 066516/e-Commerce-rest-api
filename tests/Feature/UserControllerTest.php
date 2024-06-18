@@ -81,3 +81,4 @@ class UserControllerTest extends TestCase
         $response->assertStatus(204);
     }
 }
+
