@@ -33,7 +33,12 @@ jobs:
       - name: Install dependencies
         run: composer install --no-ansi --no-interaction --no-progress --no-suggest
 
- 
+      - name: Copy .env file if not exists
+        run: |
+          if [ ! -f .env ]; then
+            cp .env.example .env
+          fi
+
 
       - name: Generate application key
         run: php artisan key:generate
