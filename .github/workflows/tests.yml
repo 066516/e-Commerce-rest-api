@@ -1,0 +1,22 @@
+name: Run Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2.5" # Adjust PHP version based on your project requirements
+
+      - name: Install dependencies
+        run: composer install --no-ansi --no-interaction --no-progress --no-suggest
+
+      - name: Run tests
+        run: vendor/bin/phpunit --testdox
