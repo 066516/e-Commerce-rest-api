@@ -19,7 +19,7 @@ jobs:
           php-version: "8.0" # Adjust PHP version as needed
 
       - name: Install Composer dependencies
-        run: composer install --no-ansi --no-interaction --no-progress --no-suggest
+        run: composer install --no-ansi --no-interaction --no-progress
 
       - name: Copy .env file
         run: cp .env.example .env
