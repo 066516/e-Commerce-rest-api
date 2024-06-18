@@ -36,6 +36,7 @@ class UserController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:8',
+                'isAdmin' => 'sometimes|boolean'
             ]);
 
             if ($validator->fails()) {
@@ -46,6 +47,7 @@ class UserController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'isAdmin' => $request->isAdmin,
             ]);
 
             // Generate token for the registered user

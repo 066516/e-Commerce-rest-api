@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             //
-            $table->boolean('confirmed')->default(false)->after('existing_column'); 
+            // $table->boolean('confirmed')->default(false)->after('existing_column'); 
 
         });
     }

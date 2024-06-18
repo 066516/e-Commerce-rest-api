@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             //
-            $table->boolean('confirmed')->default(false)->after('existing_column'); // Change 'existing_column' to the column after which you want to add the new attribute.
+            // $table->boolean('confirmed')->default(false)->after('existing_column'); // Change 'existing_column' to the column after which you want to add the new attribute.
 
         });
     }
