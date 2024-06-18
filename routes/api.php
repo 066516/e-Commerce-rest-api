@@ -25,6 +25,8 @@ use App\Http\Middleware\EnsureAdminRole; // Assuming you've created this middlew
 // Public Routes (No Authentication Needed)
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\NotificationController;
+
 
 // Route::middleware(['web'])->group(function () {
 //     Route::get('auth/google', [GoogleController::class, 'redirectToGoogle']);
@@ -68,3 +70,4 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 Route::post('/send-email', [EmailController::class, 'sendEmail']);
+Route::post('/send-notification', [NotificationController::class, 'sendNotification']);
