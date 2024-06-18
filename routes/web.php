@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 // routes/web.php
 
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\GithubController;
 // routes/web.php
 
 Route::middleware(['web'])->group(function () {
@@ -23,5 +24,9 @@ Route::middleware(['web'])->group(function () {
     Route::get('/home', function(){
         return "you are logged in";
     })->name('home')->middleware('auth');
+    Route::get('auth/github', [GithubController::class, 'redirectToGithub']);
+    Route::get('auth/github/callback', [GithubController::class, 'handleGithubCallback']);
 });
+
+
 

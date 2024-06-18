@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'isAdmin',
         'google_id', 'avatar',
+        'github_name', 'github_id', 'github_avatar',
     ];
 
     /**
