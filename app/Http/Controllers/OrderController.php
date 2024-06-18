@@ -27,7 +27,7 @@ class OrderController extends Controller
     {
         try 
         {
-            $orders = Order::all();
+            $orders = Order::orderBy('created_at', 'desc')->paginate(5);
             return response()->json($orders, 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred while fetching orders.'], 500);
