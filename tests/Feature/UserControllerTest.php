@@ -7,10 +7,11 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
+use Illuminate\Support\Facades\Hash;
 
 class UserControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    use  WithFaker;
 
     public function testIndex()
     {
@@ -22,8 +23,8 @@ class UserControllerTest extends TestCase
     public function testRegister()
     {
         $data = [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => $this->faker->name,
+            'email' => $this->faker->unique()->safeEmail,
             'password' => 'password',
             'password_confirmation' => 'password',
             'isAdmin' => true,
@@ -36,13 +37,14 @@ class UserControllerTest extends TestCase
 
     public function testLogin()
     {
+        // Create a user
         $user = User::factory()->create([
-            'email' => 'test@example.com',
-            'password' => bcrypt('password'),
+            'password' => Hash::make('password'),
         ]);
 
+        // Attempt to login with valid credentials
         $data = [
-            'email' => 'test@example.com',
+            'email' => $user->email,
             'password' => 'password',
         ];
 
