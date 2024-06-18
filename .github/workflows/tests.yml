@@ -13,7 +13,7 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.1" # Adjust PHP version as needed
+          php-version: "8.2" # Adjust PHP version as needed
 
       - name: Install Composer dependencies
         run: composer install --no-ansi --no-interaction --no-progress
