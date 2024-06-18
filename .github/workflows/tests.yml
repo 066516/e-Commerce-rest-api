@@ -1,6 +1,12 @@
 name: Run Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main # Replace with your main branch name
+  pull_request:
+    branches:
+      - main # Replace with your main branch name
 
 jobs:
   test:
@@ -13,10 +19,31 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.2.5" # Adjust PHP version based on your project requirements
+          php-version: "8.2" # Adjust PHP version based on your project requirements
 
-      - name: Install dependencies
+      - name: Install Composer dependencies
         run: composer install --no-ansi --no-interaction --no-progress --no-suggest
+
+      - name: Copy .env file
+        run: cp .env.example .env
+
+      - name: Generate application key
+        run: php artisan key:generate
+
+      - name: Configure environment variables
+        run: |
+          echo "DB_CONNECTION=pgsql" >> .env
+          echo "DB_HOST=$DB_HOST" >> .env
+          echo "DB_PORT=5432" >> .env
+          echo "DB_DATABASE=$DB_DATABASE" >> .env
+          echo "DB_USERNAME=$DB_USERNAME" >> .env
+          echo "DB_PASSWORD=$DB_PASSWORD" >> .env
+
+      - name: Run database migrations
+        run: php artisan migrate --force
 
       - name: Run tests
         run: vendor/bin/phpunit --testdox
+
+      - name: Cache cleanup
+        run: php artisan optimize:clear
